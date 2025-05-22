@@ -1,203 +1,8 @@
 import { useState } from 'react';
-import styled from 'styled-components';
 import { ArrowLeftIcon, StarIcon } from '@heroicons/react/24/solid';
 import { Link } from 'react-router-dom';
 import RulesModal from './Rules';
-
-const GameContainer = styled.div`
-  background: linear-gradient(135deg, #0A0A23 0%, #1a1a3d 100%);
-  color: #00D4FF;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;
-  padding-bottom: 20px; /* Added padding to ensure space at the bottom */
-`;
-
-const Navbar = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(10px);
-`;
-
-const NavButton = styled(Link)`
-  color: #00D4FF;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-family: 'Orbitron', sans-serif;
-  transition: all 0.3s ease;
-  &:hover {
-    text-shadow: 0 0 10px #00D4FF;
-  }
-`;
-
-const ResetButton = styled.button`
-  background: none;
-  border: 2px solid #D500F9;
-  color: #D500F9;
-  padding: 5px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-family: 'Orbitron', sans-serif;
-  transition: all 0.3s ease;
-  &:hover {
-    background: #D500F9;
-    color: #0A0A23;
-    box-shadow: 0 0 15px #D500F9;
-  }
-`;
-
-const RulesButton = styled.button`
-  background: none;
-  border: 2px solid #D500F9;
-  color: #D500F9;
-  padding: 5px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-family: 'Orbitron', sans-serif;
-  transition: all 0.3s ease;
-  margin-right: 10px;
-  &:hover {
-    background: #D500F9;
-    color: #0A0A23;
-    box-shadow: 0 0 15px #D500F9;
-  }
-`;
-
-const Heading = styled.h1`
-  font-family: 'Orbitron', sans-serif;
-  font-size: 24px;
-  text-align: center;
-  flex: 1;
-  margin: 0;
-  text-shadow: 0 0 10px #00D4FF;
-`;
-
-const PlayerDisplay = styled.h2`
-  font-family: 'Orbitron', sans-serif;
-  background: rgba(0, 212, 255, 0.1);
-  padding: 10px 20px;
-  border-radius: 5px;
-  border: 1px solid #00D4FF;
-  box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
-  margin: 10px 0;
-`;
-
-const Controls = styled.div`
-  display: flex;
-  gap: 10px;
-  margin: 10px 0;
-`;
-
-const ControlButton = styled.button`
-  background: none;
-  border: 2px solid #00D4FF;
-  color: #00D4FF;
-  padding: 5px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-family: 'Orbitron', sans-serif;
-  transition: all 0.3s ease;
-  &:hover {
-    background: #00D4FF;
-    color: #0A0A23;
-    box-shadow: 0 0 15px #00D4FF;
-  }
-`;
-
-const BoardContainer = styled.div`
-  perspective: 2000px;
-  margin-top: 190px;
-  width: 60vmin; /* Adjusted to match HoloProjector */
-  height: 60vmin;
-  position: relative; /* Ensure it participates in the flex flow */
-  flex-shrink: 0; /* Prevent it from shrinking in the flex container */
-`;
-
-const HoloProjector = styled.div`
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-  animation: projectorFloat 5s infinite ease-in-out;
-  @keyframes projectorFloat {
-    0%, 100% { transform: translateY(0) translateZ(0); }
-    50% { transform: translateY(-15px) translateZ(20px); }
-  }
-`;
-
-const Board = styled.div`
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-  transform: rotateX(57deg) rotateY(1deg);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: transform 0.5s ease;
-`;
-
-const Layer = styled.div`
-  position: absolute;
-  display: grid;
-  grid-template-columns: repeat(3, 80px);
-  gap: 5px;
-  padding: 8px;
-  background: rgba(0, 0, 0, 0.4);
-  border: 2px solid #00D4FF;
-  border-radius: 10px;
-  transform-style: preserve-3d;
-  transition: all 0.5s;
-  opacity: ${props => 1 - (props.layerIndex * 0.1)};
-  transform: ${props => `translateZ(${props.zOffset}px)`};
-  &:hover {
-    box-shadow: 0 0 20px #00D4FF;
-    opacity: 1;
-  }
-`;
-
-const Cell = styled.div`
-  width: 80px;
-  height: 80px;
-  background: ${props => props.isWinning ? 'rgba(213, 0, 249, 0.5)' : 'rgba(20, 20, 50, 0.8)'};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 24px;
-  font-family: 'Orbitron', sans-serif;
-  cursor: pointer;
-  border: 1px solid #00D4FF;
-  border-radius: 5px;
-  transition: all 0.3s;
-  transform-style: preserve-3d;
-  &:hover {
-    background: rgba(0, 212, 255, 0.2);
-    transform: translateZ(8px);
-    box-shadow: 0 0 12px rgba(0, 212, 255, 0.7);
-  }
-`;
-
-const WinMessage = styled.div`
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: 'Orbitron', sans-serif;
-  font-size: 32px;
-  color: #D500F9;
-  text-shadow: 0 0 10px #D500F9;
-  animation: fadeIn 1s ease-in;
-  @keyframes fadeIn {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
-  }
-`;
+import '../pages/css/TwoPlayer.scss';
 
 const checkWin = (board) => {
   const lines = [
@@ -269,57 +74,60 @@ function TwoPlayer() {
   };
 
   return (
-    <GameContainer>
-      <Navbar>
-        <NavButton to="/"><ArrowLeftIcon width={20} /> Back</NavButton>
-        <Heading>2 Player Mode</Heading>
+    <div className="game-container">
+      <div className="navbar">
+        <Link to="/" className="nav-button">
+          <ArrowLeftIcon width={20} /> Back
+        </Link>
+        <h1 className="heading">2 Player Mode</h1>
         <div>
-          <RulesButton onClick={() => setShowRules(true)}>Rules & Tips</RulesButton>
-          <ResetButton onClick={resetGame}>Reset</ResetButton>
+          <button className="rules-button" onClick={() => setShowRules(true)}>Rules & Tips</button>
+          <button className="reset-button" onClick={resetGame}>Reset</button>
         </div>
-      </Navbar>
-      <PlayerDisplay>Current Player: {currentPlayer}</PlayerDisplay>
-      <Controls>
-        <ControlButton onClick={() => setRotateX(x => x + 10)}>Rotate X +</ControlButton>
-        <ControlButton onClick={() => setRotateX(x => x - 10)}>Rotate X -</ControlButton>
-        <ControlButton onClick={() => setRotateY(y => y + 10)}>Rotate Y +</ControlButton>
-        <ControlButton onClick={() => setRotateY(y => y - 10)}>Rotate Y -</ControlButton>
-      </Controls>
-      <BoardContainer>
-        <HoloProjector>
-          <Board
+      </div>
+      <h2 className="player-display margin-top-60">Current Player: {currentPlayer}</h2>
+      <div className="controls">
+        <button className="control-button" onClick={() => setRotateX(x => x + 10)}>Rotate X +</button>
+        <button className="control-button" onClick={() => setRotateX(x => x - 10)}>Rotate X -</button>
+        <button className="control-button" onClick={() => setRotateY(y => y + 10)}>Rotate Y +</button>
+        <button className="control-button" onClick={() => setRotateY(y => y - 10)}>Rotate Y -</button>
+      </div>
+      <div className="board-container">
+        <div className="holo-projector">
+          <div
+            className="board"
             style={{
               transform: `rotateX(${rotateX + 57}deg) rotateY(${rotateY + 1}deg)`
             }}
           >
             {board.map((layer, l) => (
-              <Layer key={l} layerIndex={l} zOffset={(2 - l) * 150}>
+              <div key={l} className={`layer layer-${l}`} style={{ transform: `translateZ(${(2 - l) * 150}px)`, opacity: 1 - (l * 0.1) }}>
                 {layer.map((row, r) =>
                   row.map((cell, c) => (
-                    <Cell
+                    <div
                       key={`${l}-${r}-${c}`}
+                      className={`cell ${isWinningCell(l, r, c) ? 'cell-winning' : ''}`}
                       onClick={() => handleClick(l, r, c)}
-                      isWinning={isWinningCell(l, r, c)}
                     >
                       {cell}
-                    </Cell>
+                    </div>
                   ))
                 )}
-              </Layer>
+              </div>
             ))}
-          </Board>
-        </HoloProjector>
-      </BoardContainer>
+          </div>
+        </div>
+      </div>
       {winner && (
         <>
-          <WinMessage>Winner: {winner}</WinMessage>
-          <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '48px', color: '#D500F9', animation: 'fadeIn 2s ease-in-out infinite' }}>
+          <div className="win-message">Winner: {winner}</div>
+          <div className="win-star">
             <StarIcon width={48} />
           </div>
         </>
       )}
       {showRules && <RulesModal onClose={() => setShowRules(false)} />}
-    </GameContainer>
+    </div>
   );
 }
 

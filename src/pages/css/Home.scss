@@ -1,0 +1,71 @@
+.home-container {
+    background: linear-gradient(135deg, #0A0A23 0%, #1a1a3d 100%);
+    color: #00D4FF;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    overflow: hidden;
+  }
+  
+  .navbar {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+  }
+  
+  .heading {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 24px;
+    text-align: center;
+    flex: 1;
+    margin: 0;
+    text-shadow: 0 0 10px #00D4FF;
+  }
+  
+  .rules-button {
+    background: none;
+    border: 2px solid #D500F9;
+    color: #D500F9;
+    padding: 5px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Orbitron', sans-serif;
+    transition: all 0.3s ease;
+  }
+  
+  .rules-button:hover {
+    background: #D500F9;
+    color: #0A0A23;
+    box-shadow: 0 0 15px #D500F9;
+  }
+  
+  .button {
+    width: 140px;
+    display: flex;
+    justify-content: center;
+    background: none;
+    border: 2px solid #00D4FF;
+    color: #00D4FF;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Orbitron', sans-serif;
+    transition: all 0.3s ease;
+  }
+  
+  .button:hover {
+    background: #00D4FF;
+    color: #0A0A23;
+    box-shadow: 0 0 15px #00D4FF;
+  }
