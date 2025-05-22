@@ -12,6 +12,7 @@ const GameContainer = styled.div`
   flex-direction: column;
   align-items: center;
   overflow: hidden;
+  padding-bottom: 20px; /* Added padding to ensure space at the bottom */
 `;
 
 const Navbar = styled.div`
@@ -110,50 +111,73 @@ const DifficultySelector = styled.select`
 `;
 
 const BoardContainer = styled.div`
-  perspective: 1200px; /* Increased perspective for better visibility */
-  margin: 20px 0;
+  perspective: 2000px;
+  margin-top: 170px;
+  width: 60vmin;
+  height: 60vmin;
+  position: relative;
+  flex-shrink: 0;
+`;
+
+const HoloProjector = styled.div`
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: projectorFloat 5s infinite ease-in-out;
+  @keyframes projectorFloat {
+    0%, 100% { transform: translateY(0) translateZ(0); }
+    50% { transform: translateY(-15px) translateZ(20px); }
+  }
 `;
 
 const Board = styled.div`
-  display: flex;
-  grid-template-rows: repeat(3, 1fr);
-  gap: 25px; /* Increased gap to prevent overlap */
+  width: 100%;
+  height: 100%;
   transform-style: preserve-3d;
+  transform: rotateX(57deg) rotateY(1deg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   transition: transform 0.5s ease;
 `;
 
 const Layer = styled.div`
+  position: absolute;
   display: grid;
   grid-template-columns: repeat(3, 80px);
   gap: 5px;
-  background: rgba(0, 212, 255, 0.05);
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
-  animation: float 3s ease-in-out infinite;
-  @keyframes float {
-    0% { transform: translateZ(0); }
-    50% { transform: translateZ(10px); }
-    100% { transform: translateZ(0); }
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid #00D4FF;
+  border-radius: 10px;
+  transform-style: preserve-3d;
+  transition: all 0.5s;
+  opacity: ${props => 1 - (props.layerIndex * 0.1)};
+  transform: ${props => `translateZ(${props.zOffset}px)`};
+  &:hover {
+    box-shadow: 0 0 20px #00D4FF;
+    opacity: 1;
   }
 `;
 
 const Cell = styled.div`
   width: 80px;
   height: 80px;
-  background: ${props => props.isWinning ? 'rgba(213, 0, 249, 0.5)' : 'rgba(0, 212, 255, 0.1)'};
+  background: ${props => props.isWinning ? 'rgba(213, 0, 249, 0.5)' : 'rgba(20, 20, 50, 0.8)'};
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 24px;
   font-family: 'Orbitron', sans-serif;
   cursor: pointer;
-  border: 2px solid #00D4FF;
+  border: 1px solid #00D4FF;
   border-radius: 5px;
-  transition: all 0.3s ease;
+  transition: all 0.3s;
+  transform-style: preserve-3d;
   &:hover {
-    background: rgba(0, 212, 255, 0.3);
-    box-shadow: 0 0 15px #00D4FF;
+    background: rgba(0, 212, 255, 0.2);
+    transform: translateZ(8px);
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.7);
   }
 `;
 
@@ -332,37 +356,37 @@ function PlayWithAI() {
         <option value="hard">Hard</option>
       </DifficultySelector>
       <PlayerDisplay>Current Player: {currentPlayer}</PlayerDisplay>
-      <BoardContainer>
-        <Board
-          style={{
-            transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`
-          }}
-        >
-          {board.map((layer, l) => (
-            <Layer key={l}>
-              {layer.map((row, r) =>
-                row.map((cell, c) => (
-                  <Cell
-                    key={`${l}-${r}-${c}`}
-                    onClick={() => handleClick(l, r, c)}
-                    style={{
-                      background: isWinningCell(l, r, c) ? 'rgba(213, 0, 249, 0.5)' : 'rgba(0, 212, 255, 0.1)'
-                    }}
-                  >
-                    {cell}
-                  </Cell>
-                ))
-              )}
-            </Layer>
-          ))}
-        </Board>
-      </BoardContainer>
       <Controls>
         <ControlButton onClick={() => setRotateX(x => x + 10)}>Rotate X +</ControlButton>
         <ControlButton onClick={() => setRotateX(x => x - 10)}>Rotate X -</ControlButton>
         <ControlButton onClick={() => setRotateY(y => y + 10)}>Rotate Y +</ControlButton>
         <ControlButton onClick={() => setRotateY(y => y - 10)}>Rotate Y -</ControlButton>
       </Controls>
+      <BoardContainer>
+        <HoloProjector>
+          <Board
+            style={{
+              transform: `rotateX(${rotateX + 57}deg) rotateY(${rotateY + 1}deg)`
+            }}
+          >
+            {board.map((layer, l) => (
+              <Layer key={l} layerIndex={l} zOffset={(2 - l) * 150}>
+                {layer.map((row, r) =>
+                  row.map((cell, c) => (
+                    <Cell
+                      key={`${l}-${r}-${c}`}
+                      onClick={() => handleClick(l, r, c)}
+                      isWinning={isWinningCell(l, r, c)}
+                    >
+                      {cell}
+                    </Cell>
+                  ))
+                )}
+              </Layer>
+            ))}
+          </Board>
+        </HoloProjector>
+      </BoardContainer>
       {winner && (
         <>
           <WinMessage>Winner: {winner}</WinMessage>
