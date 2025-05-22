@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { ArrowLeftIcon, StarIcon } from '@heroicons/react/24/solid';
 import { Link } from 'react-router-dom';
 import RulesModal from './Rules';
-import '../pages/css/PlayWithAI.scss';
+import './css/PlayWithAI.scss';
 
 const checkWin = (board) => {
   const lines = [
