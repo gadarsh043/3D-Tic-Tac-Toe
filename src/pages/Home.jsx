@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { PlayIcon, UserGroupIcon } from '@heroicons/react/24/solid';
 import RulesModal from './Rules';
 import { useState } from 'react';
-import './css/Home.scss';
+import '@/pages/css/Home.scss';
 
 function Home() {
   const [showRules, setShowRules] = useState(false);

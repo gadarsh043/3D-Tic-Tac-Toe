@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ArrowLeftIcon, StarIcon } from '@heroicons/react/24/solid';
 import { Link } from 'react-router-dom';
 import RulesModal from './Rules';
-import './css/TwoPlayer.scss';
+import '@/pages/css/TwoPlayer.scss';
 
 const checkWin = (board) => {
   const lines = [

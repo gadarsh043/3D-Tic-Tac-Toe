@@ -1,6 +1,6 @@
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import PropTypes from 'prop-types';
-import './css/Rules.scss';
+import '@/pages/css/Rules.scss';
 
 function RulesModal({ onClose }) {
   return (
